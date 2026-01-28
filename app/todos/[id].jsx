@@ -10,6 +10,7 @@ import { Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from "expo-router";
+import api from "../../src/api/todos";
 
 export default function EditScreen() {
     const {id} = useLocalSearchParams()
@@ -17,9 +18,28 @@ export default function EditScreen() {
     const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
     const router = useRouter()
 
+
+
     const [loaded, error] = useFonts({
         Inter_500Medium,
       })
+    useEffect(() => {
+        const fetchTodo = async () => {
+            try {
+                const response = await api.get(`/todos`);
+                setTodo(response.data)
+            } catch (err) {
+                if (err.response) {
+                console.log(err.response.data)
+                console.log(err.response.status)
+                console.log(err.response.headers)
+                } else {
+                console.log(`Error: ${err.message}`);
+                }
+            }
+        }
+        fetchTodo();
+    }, [])
 
     useEffect(() => {
 

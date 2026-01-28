@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { Octicons } from "@expo/vector-icons";
 
 import {data} from "@/data/todos";
+import api from "../src/api/todos";
 
 export default function Index() {
   const [todos, setTodos] = useState([])
@@ -34,7 +35,7 @@ export default function Index() {
         (jsonValue) : null 
 
         if (storageTodos && storageTodos.length) {
-          setTodos(storageTodos.sort((a, b) => b.id - a.id));
+          // setTodos(storageTodos.sort((a, b) => b.id - a.id));
         } else {
           setTodos(data.sort((a, b) => b.id - a.id));
         }
@@ -66,20 +67,44 @@ export default function Index() {
 
   const styles = createStyles(theme, colorScheme)
 
-  const addTodo = () => {
+  const addTodo = async  () => {
     if (text.trim()) {
-      const newId = todos.length > 0 ? todos[0].id + 1 : 1;
-      setTodos ([{id: newId, title: text, completed: false}, ...todos])
-      setText('')
+      try {
+        const newId = todos.length > 0 ? todos[0].id + 1 : 1;
+        const response = await api.post('/todos', {id: newId, title: text, completed: false});
+        setTodos ([{id: newId, title: text, completed: false}, ...todos])
+        setText('')
+      } catch (err) {
+        console.log(`Error: ${err.name}`);
+       const Errors = Object.entries(err)
+       Errors.forEach(([key, value]) => {
+        console.log(`${key}: ${value}`);
+       })
+      }
     }
   }
+  
 
   const toggleTodo = (id) => {
     setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo))
   }
 
-  const removeTodo = (id) => {
-    setTodos(todos.filter(todo => todo.id !== id))
+  const editTodo = async (id) => {
+    try {
+      const response = await api.put(`/todos/${id}`, {id, title: text, completed: false});
+      setTodos(todos.map(todo => todo.id === id ? { ...todo, title: text } : todo))
+    } catch (err) {
+      console.log(`Error: ${err.message}`);//
+    }
+  }
+
+  const removeTodo = async (id) => {
+    try {
+      await api.delete(`/todos/${id}`);
+      setTodos(todos.filter(todo => todo.id !== id))
+    } catch (err) {
+      console.log(`Error: ${err.message}`);
+    }
   }
 
   const handlePress = (id) => {
