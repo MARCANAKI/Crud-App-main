@@ -22,6 +22,7 @@ export default function Index() {
   const [text, setText] = useState('')
   const {colorScheme, setColorScheme, theme} = useContext(ThemeContext)
   const router = useRouter()
+  console.log("Current theme:", colorScheme);
 
   const [loaded, error] = useFonts({
     Inter_500Medium,
@@ -108,7 +109,7 @@ export default function Index() {
   }
 
   const handlePress = (id) => {
-    router.push(`/todos${id}`)
+    router.push(`/todos/editPage`)
   }
 
   const renderItem=({ item }) => (
