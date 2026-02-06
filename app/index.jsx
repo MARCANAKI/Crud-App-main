@@ -32,11 +32,10 @@ export default function Index() {
     const fetchData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem("TodoApp")
-        const storageTodos = jsonValue != null ? JSON.parse
-        (jsonValue) : null 
-
-        if (storageTodos && storageTodos.length) {
-          // setTodos(storageTodos.sort((a, b) => b.id - a.id));
+        const storageTodos = jsonValue != null ? JSON.parse(jsonValue) : null 
+        // const storageTodos = await api.get('/todos').then(res => res.data);
+        if (storageTodos && storageTodos.length > 0) {
+          setTodos(storageTodos.sort((a, b) => b.id - a.id));
         } else {
           setTodos(data.sort((a, b) => b.id - a.id));
         }
@@ -45,9 +44,8 @@ export default function Index() {
         console.error(e)
       }
     }
-
     fetchData()
-  }, [data])
+  }, [])
 
   useEffect (() => {
       const storeData = async () => {
@@ -90,15 +88,6 @@ export default function Index() {
     setTodos(todos.map(todo => todo.id === id ? { ...todo, completed: !todo.completed } : todo))
   }
 
-  const editTodo = async (id) => {
-    try {
-      const response = await api.put(`/todos/${id}`, {id, title: text, completed: false});
-      setTodos(todos.map(todo => todo.id === id ? { ...todo, title: text } : todo))
-    } catch (err) {
-      console.log(`Error: ${err.message}`);//
-    }
-  }
-
   const removeTodo = async (id) => {
     try {
       await api.delete(`/todos/${id}`);
@@ -109,14 +98,13 @@ export default function Index() {
   }
 
   const handlePress = (item) => {
-
     const itemStringify = JSON.stringify(item);
     console.log("Navigating to EditPage with item:", itemStringify);
     // router.push({
     //   pathname: `/todos/editPage`,
     //   params: { item: itemString }
     // })
-    router.push(`/todos/editPage?itemEdit=${itemStringify}`)
+    router.replace(`/todos/editPage?itemEdit=${itemStringify}`)
   }
 
   const renderItem=({ item }) => (

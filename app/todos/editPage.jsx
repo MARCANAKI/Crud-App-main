@@ -1,8 +1,9 @@
 import { Text, TextInput, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { Pressable } from "react-native";
+import api from "../../src/api/todos";
 
 function EditPage() {
   const { itemEdit } = useLocalSearchParams();
@@ -10,6 +11,17 @@ function EditPage() {
   const parsedItem = JSON.parse(itemEdit)
 
   const [title, setTitle] = useState(parsedItem.title);
+
+  const editTodo = async () => {
+      try {
+        const response = await api.put(`/todos/${parsedItem.id}`, 
+          {id: parsedItem.id, title, completed: parsedItem.completed});
+          console.log(response);
+          router.replace('/');
+      } catch (err) {
+        console.log(`Error: ${err.message}`);
+      }
+    }
 
 
 
@@ -22,7 +34,7 @@ function EditPage() {
         style={styles.Input}
         value={title}
         onChangeText={setTitle}/>
-        <Pressable style={styles.updateButton} onPress={() => console.log("Update pressed")} handlePress={itemEdit}>
+        <Pressable style={styles.updateButton} onPress={editTodo} >
           <Text style={styles.updateButtonText}>Update</Text>
         </Pressable>
     </SafeAreaView>

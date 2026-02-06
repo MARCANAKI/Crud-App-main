@@ -77,7 +77,7 @@
     },
     {
       "id": 16,
-      "title": "Finish the presentation",
+      "title": "Finish the job",
       "completed": false
     },
     {
@@ -87,17 +87,7 @@
     },
     {
       "id": 18,
-      "title": "Pay the bills",
-      "completed": false
-    },
-    {
-      "id": 21,
-      "title": "Fggjhj",
-      "completed": false
-    },
-    {
-      "id": 19,
-      "title": "Gggghll",
+      "title": "Pay the bill",
       "completed": false
     }
   ]
