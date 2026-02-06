@@ -108,14 +108,21 @@ export default function Index() {
     }
   }
 
-  const handlePress = (id) => {
-    router.push(`/todos/editPage`)
+  const handlePress = (item) => {
+
+    const itemStringify = JSON.stringify(item);
+    console.log("Navigating to EditPage with item:", itemStringify);
+    // router.push({
+    //   pathname: `/todos/editPage`,
+    //   params: { item: itemString }
+    // })
+    router.push(`/todos/editPage?itemEdit=${itemStringify}`)
   }
 
   const renderItem=({ item }) => (
     <View style={styles.todoItem}>
       <Pressable
-        onPress= {() => handlePress(item.id)}
+        onPress= {() => handlePress(item)}
         onLongPress={() => toggleTodo(item.id)}
       >
         <Text 
